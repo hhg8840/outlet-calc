@@ -5,7 +5,7 @@ import React, { useMemo, useState } from "react";
  */
 type DiscountMode = "amount" | "percent";
 const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
-const toKrw = (n: number) => (isNaN(n) ? "-" : new Intl.NumberFormat("ko-KR").format(Math.round(n)) + "원");
+const toKrw = (n: number) => (isNaN(n) ? "-" : new Intl.NumberFormat("ko-KR").format(Math.round(n)));
 const krw = toKrw; // 기존 이름 유지
 
 const step2AfterFirstDiscount = (
@@ -115,9 +115,9 @@ export default function OutletDiscountCalculator() {
     const clearHistory = () => setHistory([]);
 
     return (
-        <div className="min-h-screen bg-gray-50 py-6 px-3 md:py-8 md:px-4">
+        <div className="bg-white border-l-4 border-teal-400 p-4 rounded-xl shadow">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">프리미엄 아울렛 추가할인 + 부가세 환급 계산기</h1>
+                <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">아울렛 추가할인 계산기</h1>
 
                 {/* ✅ 결과 카드 — 상단 배치 */}
                 <div className="bg-white p-4 md:p-5 rounded-2xl shadow">
@@ -129,36 +129,45 @@ export default function OutletDiscountCalculator() {
                         <div className="flex justify-between font-semibold text-sm md:text-base"><span>최종 결제금액</span><span>{krw(final)}</span></div>
 
                         <div className="mt-2 md:mt-3 p-2 md:p-3 bg-gray-50 rounded-xl">
-                            <div className="flex justify-between"><span>단순 10% 환급액</span><span>{krw(refund10)}</span></div>
-                            <div className="flex justify-between"><span>환급 후 실지출 (10%)</span><span>{krw(afterRefund10)}</span></div>
+                            <div className="flex justify-between"><span>공급가액</span><span>{krw(afterRefund10)}</span>
+                            </div>
+                            <div className="flex justify-between"><span>부가세</span><span>{krw(refund10)}</span></div>
+
                         </div>
                     </div>
 
                     <div className="mt-3 md:mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 text-xs md:text-sm">
                         <div>
-                            <div className={`flex justify-between ${kreamNet !== undefined && kreamNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-700"}`}>
-                                <span>Kream 정산금액</span>
-                                <span>{kreamNet !== undefined ? krw(kreamNet) : "-"}</span>
-                            </div>
-                            <div className={`flex justify-between text-[11px] md:text-xs ${kreamNet !== undefined && kreamNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
-                                <span>Kream 마진</span>
-                                <span>{kreamNet !== undefined ? `${krw(kreamNet - final)} (${((kreamNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div className={`flex justify-between ${poizonNet !== undefined && poizonNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-700"}`}>
+                            <div
+                                className={`flex justify-between ${poizonNet !== undefined && poizonNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-700"}`}>
                                 <span>Poizon 정산금액</span>
                                 <span>{poizonNet !== undefined ? krw(poizonNet) : "-"}</span>
                             </div>
-                            <div className={`flex justify-between text-[11px] md:text-xs ${poizonNet !== undefined && poizonNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+                            <div
+                                className={`flex justify-between text-[11px] md:text-xs ${poizonNet !== undefined && poizonNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
                                 <span>Poizon 마진</span>
                                 <span>{poizonNet !== undefined ? `${krw(poizonNet - final)} (${((poizonNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
                             </div>
                         </div>
+                        <div>
+                            <div
+                                className={`flex justify-between ${kreamNet !== undefined && kreamNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-700"}`}>
+                                <span>Kream 정산금액</span>
+                                <span>{kreamNet !== undefined ? krw(kreamNet) : "-"}</span>
+                            </div>
+                            <div
+                                className={`flex justify-between text-[11px] md:text-xs ${kreamNet !== undefined && kreamNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+                                <span>Kream 마진</span>
+                                <span>{kreamNet !== undefined ? `${krw(kreamNet - final)} (${((kreamNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div className="mt-3 md:mt-4 flex gap-2">
-                        <button className="px-3 py-2 rounded border bg-black text-white text-sm" onClick={saveHistory}>히스토리 저장</button>
+                        <button className="px-3 py-2 rounded border bg-teal-500 hover:bg-teal-600 text-white"
+                                onClick={saveHistory}>히스토리 저장
+                        </button>
                         <button className="px-3 py-2 rounded border text-sm" onClick={clearHistory}>히스토리 전체 삭제</button>
                     </div>
                 </div>
@@ -177,14 +186,38 @@ export default function OutletDiscountCalculator() {
                             <label className="min-w-[84px] text-xs text-gray-600">1차 할인</label>
                             <div className="flex-1 flex items-center gap-2">
                                 <div className="inline-flex rounded-lg overflow-hidden border">
-                                    <button type="button" className={`px-2.5 py-1.5 text-xs ${discountMode === "amount" ? "bg-gray-900 text-white" : "bg-white"}`} onClick={() => setDiscountMode("amount")}>금액</button>
-                                    <button type="button" className={`px-2.5 py-1.5 text-xs ${discountMode === "percent" ? "bg-gray-900 text-white" : "bg-white"}`} onClick={() => setDiscountMode("percent")}>%</button>
+                                    <button
+                                        type="button"
+                                        className={`px-2.5 py-1.5 text-xs ${
+                                            discountMode === "amount"
+                                                ? "bg-teal-500 text-white"
+                                                : "bg-white text-teal-600"
+                                        }`}
+                                        onClick={() => setDiscountMode("amount")}
+                                    >
+                                        금액
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`px-2.5 py-1.5 text-xs ${
+                                            discountMode === "percent"
+                                                ? "bg-teal-500 text-white"
+                                                : "bg-white text-teal-600"
+                                        }`}
+                                        onClick={() => setDiscountMode("percent")}
+                                    >
+                                        %
+                                    </button>
                                 </div>
                                 {discountMode === "amount" ? (
-                                    <input inputMode="numeric" pattern="[0-9]*" type="number" className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 40000" value={baseDiscountAmount} onChange={(e) => setBaseDiscountAmount(Number(e.target.value))} />
+                                    <input inputMode="numeric" pattern="[0-9]*" type="number"
+                                           className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 40000"
+                                           value={baseDiscountAmount}
+                                           onChange={(e) => setBaseDiscountAmount(Number(e.target.value))}/>
                                 ) : (
                                     <div className="flex items-center gap-1 w-full">
-                                        <input inputMode="numeric" pattern="[0-9]*" type="number" className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 40" value={baseDiscountPercent} onChange={(e) => setBaseDiscountPercent(Number(e.target.value))} />
+                                        <input inputMode="numeric" pattern="[0-9]*" type="number"
+                                               className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 40" value={baseDiscountPercent} onChange={(e) => setBaseDiscountPercent(Number(e.target.value))} />
                                         <span className="text-xs text-gray-500">%</span>
                                     </div>
                                 )}
@@ -204,24 +237,36 @@ export default function OutletDiscountCalculator() {
                     <div className="mt-4 md:mt-6 grid grid-cols-1 gap-3">
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
-                                <label className="min-w-[84px] text-xs text-gray-600">Kream 가격</label>
-                                <input inputMode="numeric" pattern="[0-9]*" type="number" className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 65000" value={kreamPrice ?? ""} onChange={(e) => setKreamPrice(e.target.value === "" ? undefined : Number(e.target.value))} />
+                                <label className="min-w-[84px] text-xs text-gray-600">Poizon 가격</label>
+                                <input inputMode="numeric" pattern="[0-9]*" type="number"
+                                       className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 66000"
+                                       value={poizonPrice ?? ""}
+                                       onChange={(e) => setPoizonPrice(e.target.value === "" ? undefined : Number(e.target.value))}/>
                             </div>
                             <div className="flex flex-wrap items-center gap-2 pl-[84px] text-[11px] text-gray-600">
-                                <span className="px-2 py-1 rounded-full bg-gray-100">수수료 {kreamFee !== undefined ? krw(kreamFee) : "-"}</span>
-                                <span className={`px-2 py-1 rounded-full ${kreamNet !== undefined && kreamNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>정산 {kreamNet !== undefined ? krw(kreamNet) : "-"}</span>
-                                <span className={`px-2 py-1 rounded-full ${kreamNet !== undefined && kreamNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>마진 {kreamNet !== undefined ? `${krw(kreamNet - final)} (${((kreamNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
+                                <span
+                                    className="px-2 py-1 rounded-full bg-gray-100">수수료 {poizonFee !== undefined ? krw(poizonFee) : "-"}</span>
+                                <span
+                                    className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>정산 {poizonNet !== undefined ? krw(poizonNet) : "-"}</span>
+                                <span
+                                    className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>마진 {poizonNet !== undefined ? `${krw(poizonNet - final)} (${((poizonNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
-                                <label className="min-w-[84px] text-xs text-gray-600">Poizon 가격</label>
-                                <input inputMode="numeric" pattern="[0-9]*" type="number" className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 66000" value={poizonPrice ?? ""} onChange={(e) => setPoizonPrice(e.target.value === "" ? undefined : Number(e.target.value))} />
+                                <label className="min-w-[84px] text-xs text-gray-600">Kream 가격</label>
+                                <input inputMode="numeric" pattern="[0-9]*" type="number"
+                                       className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 65000"
+                                       value={kreamPrice ?? ""}
+                                       onChange={(e) => setKreamPrice(e.target.value === "" ? undefined : Number(e.target.value))}/>
                             </div>
                             <div className="flex flex-wrap items-center gap-2 pl-[84px] text-[11px] text-gray-600">
-                                <span className="px-2 py-1 rounded-full bg-gray-100">수수료 {poizonFee !== undefined ? krw(poizonFee) : "-"}</span>
-                                <span className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>정산 {poizonNet !== undefined ? krw(poizonNet) : "-"}</span>
-                                <span className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>마진 {poizonNet !== undefined ? `${krw(poizonNet - final)} (${((poizonNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
+                                <span
+                                    className="px-2 py-1 rounded-full bg-gray-100">수수료 {kreamFee !== undefined ? krw(kreamFee) : "-"}</span>
+                                <span
+                                    className={`px-2 py-1 rounded-full ${kreamNet !== undefined && kreamNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>정산 {kreamNet !== undefined ? krw(kreamNet) : "-"}</span>
+                                <span
+                                    className={`px-2 py-1 rounded-full ${kreamNet !== undefined && kreamNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>마진 {kreamNet !== undefined ? `${krw(kreamNet - final)} (${((kreamNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
                             </div>
                         </div>
                     </div>
@@ -242,7 +287,7 @@ export default function OutletDiscountCalculator() {
                                     <th rowSpan={2} className="py-2 px-2">1차</th>
                                     <th rowSpan={2} className="py-2 px-2">추가%</th>
                                     <th rowSpan={2} className="py-2 px-2">최종가</th>
-                                    <th rowSpan={2} className="py-2 px-2">환급(10%)</th>
+                                    <th rowSpan={2} className="py-2 px-2">부가세</th>
                                     <th colSpan={2} className="py-2 px-2 text-center">Kream</th>
                                     <th colSpan={2} className="py-2 px-2 text-center">Poizon</th>
                                     <th rowSpan={2} className="py-2 px-2">삭제</th>
