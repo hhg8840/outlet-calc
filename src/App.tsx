@@ -134,11 +134,11 @@ async function dbDeleteHistory(id: string) {
  * ===== 컴포넌트 =====
  */
 export default function OutletDiscountCalculator() {
-    const [basePrice, setBasePrice] = useState<number>(100000);
+    const [basePrice, setBasePrice] = useState<number>(0);
     const [discountMode, setDiscountMode] = useState<DiscountMode>("amount");
-    const [baseDiscountAmount, setBaseDiscountAmount] = useState<number>(40000);
+    const [baseDiscountAmount, setBaseDiscountAmount] = useState<number>(0);
     const [baseDiscountPercent, setBaseDiscountPercent] = useState<number>(40);
-    const [extra, setExtra] = useState<number>(20);
+    const [extra, setExtra] = useState<number>(25);
     const [memo, setMemo] = useState<string>("");
     const [history, setHistory] = useState<HistoryItem[]>([]);
     const [kreamPrice, setKreamPrice] = useState<number | undefined>(undefined);
@@ -172,6 +172,16 @@ export default function OutletDiscountCalculator() {
     const poizonFee = useMemo(() => poizonFeeFromPrice(poizonPrice, poizonNet), [poizonPrice, poizonNet]);
 
     const saveHistory = async () => {
+        const memoTrim = memo.trim();
+        // 메모가 비어 있으면 저장하지 않음 (UI/DB 둘 다 스킵)
+        if (!memoTrim) {
+            // 필요 시 사용자 피드백
+            if (typeof window !== 'undefined') {
+                try { window.alert('품목정보가 비어 있어 저장하지 않습니다.'); } catch {}
+            }
+            return;
+        }
+
         const newItem: HistoryItem = {
             id: (crypto as any).randomUUID ? (crypto as any).randomUUID() : `${Date.now()}-${Math.random()}`,
             basePrice,
@@ -282,11 +292,19 @@ export default function OutletDiscountCalculator() {
                         {/* 1) 기본 입력 */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                             <div className="flex items-center gap-2">
+                                <label className="min-w-[84px] text-xs text-gray-600">품목</label>
+                                <input type="text" className="flex-1 border rounded px-3 py-2 text-sm"
+                                       placeholder="에어포스 등 품목코드" value={memo}
+                                       onChange={(e) => setMemo(e.target.value)}/>
+                            </div>
+
+                            <div className="flex items-center gap-2">
                                 <label className="min-w-[84px] text-xs text-gray-600">정가(원)</label>
                                 <input inputMode="numeric" pattern="[0-9]*" type="number"
                                        className="flex-1 border rounded px-3 py-2 text-sm" value={basePrice}
                                        onChange={(e) => setBasePrice(Number(e.target.value))}/>
                             </div>
+
                             <div className="flex items-center gap-2">
                                 <label className="min-w-[84px] text-xs text-gray-600">1차 할인</label>
                                 <div className="flex-1 flex items-center gap-2">
@@ -316,18 +334,16 @@ export default function OutletDiscountCalculator() {
                                     )}
                                 </div>
                             </div>
+
+
                             <div className="flex items-center gap-2">
                                 <label className="min-w-[84px] text-xs text-gray-600">추가 할인(%)</label>
                                 <input inputMode="numeric" pattern="[0-9]*" type="number"
                                        className="flex-1 border rounded px-3 py-2 text-sm" value={extra}
                                        onChange={(e) => setExtra(Number(e.target.value))}/>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <label className="min-w-[84px] text-xs text-gray-600">메모</label>
-                                <input type="text" className="flex-1 border rounded px-3 py-2 text-sm"
-                                       placeholder="에어포스 등 품목코드" value={memo}
-                                       onChange={(e) => setMemo(e.target.value)}/>
-                            </div>
+
+
                         </div>
 
                         {/* Kream / Poizon */}
