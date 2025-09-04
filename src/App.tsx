@@ -256,9 +256,9 @@ export default function OutletDiscountCalculator() {
                                     <span>{poizonNet !== undefined ? krw(poizonNet) : "-"}</span>
                                 </div>
                                 <div
-                                    className={`flex justify-between text-[11px] md:text-xs ${poizonNet !== undefined && poizonNet - final < 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+                                    className={`flex justify-between text-[11px] md:text-xs ${poizonNet !== undefined && poizonNet - final + refund10 < 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
                                     <span>Poizon 마진</span>
-                                    <span>{poizonNet !== undefined ? `${krw(poizonNet - final)} (${((poizonNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
+                                    <span>{poizonNet !== undefined ? `${krw(poizonNet - final + refund10)} (${((poizonNet - final + refund10) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
                                 </div>
                             </div>
                             <div>
@@ -361,9 +361,9 @@ export default function OutletDiscountCalculator() {
                                 <span
                                     className="px-2 py-1 rounded-full bg-gray-100">수수료 {poizonFee !== undefined ? krw(poizonFee) : "-"}</span>
                                     <span
-                                        className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>정산 {poizonNet !== undefined ? krw(poizonNet) : "-"}</span>
+                                        className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final + refund10 < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>정산 {poizonNet !== undefined ? krw(poizonNet) : "-"}</span>
                                     <span
-                                        className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>마진 {poizonNet !== undefined ? `${krw(poizonNet - final)} (${((poizonNet - final) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
+                                        className={`px-2 py-1 rounded-full ${poizonNet !== undefined && poizonNet - final + refund10 < 0 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}>마진 {poizonNet !== undefined ? `${krw(poizonNet - final + refund10)} (${((poizonNet - final + refund10) / (final || 1) * 100).toFixed(1)}%)` : "-"}</span>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">
