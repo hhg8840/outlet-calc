@@ -224,13 +224,18 @@ export default function OutletDiscountCalculator() {
     const clearHistory = () => setHistory([]); // 전체 삭제는 위험하여 로컬 UI만 초기화
 
     return (
-        <div className="min-h-screen bg-teal-50 flex items-center justify-center">
+        // <div className="min-h-screen bg-teal-50 flex items-center justify-center">
+        <div className="min-h-screen bg-teal-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 grid items-start md:place-items-center p-3 md:p-6 overflow-y-auto">
+
             <div className="max-w-6xl w-full px-3 md:px-4">
                 <div className="max-w-6xl mx-auto">
                     <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-teal-700">아울렛 계산기</h1>
 
                     {/* ✅ 결과 카드 — 상단 배치 */}
-                    <div className="bg-white p-4 md:p-5 rounded-2xl shadow">
+                    {/*<div className="bg-white p-4 md:p-5 rounded-2xl shadow">*/}
+                    <div
+                        className="bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 md:p-5 rounded-2xl shadow">
+
                         <h2 className="font-semibold mb-3 md:mb-4">결과</h2>
                         <div className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
                             <div className="flex justify-between"><span>정가</span><span>{krw(step1)}</span></div>
@@ -239,7 +244,8 @@ export default function OutletDiscountCalculator() {
                             <div className="flex justify-between font-semibold text-sm md:text-base">
                                 <span>최종 결제금액</span><span>{krw(final)}</span></div>
 
-                            <div className="mt-2 md:mt-3 p-2 md:p-3 bg-teal-50 rounded-xl">
+                            {/*<div className="mt-2 md:mt-3 p-2 md:p-3 bg-teal-50 rounded-xl">*/}
+                            <div className="mt-2 md:mt-3 p-2 md:p-3 bg-teal-50 dark:bg-slate-700 rounded-xl">
                                 <div className="flex justify-between"><span>공급가액</span><span>{krw(afterRefund10)}</span>
                                 </div>
                                 <div className="flex justify-between"><span>부가세액</span><span>{krw(refund10)}</span>
@@ -286,7 +292,10 @@ export default function OutletDiscountCalculator() {
                     </div>
 
                     {/* 입력 카드 — 결과 아래로 */}
-                    <div className="mt-4 md:mt-6 bg-white p-4 md:p-5 rounded-2xl shadow">
+                    {/*<div className="mt-4 md:mt-6 bg-white p-4 md:p-5 rounded-2xl shadow">*/}
+                    <div
+                        className="mt-4 md:mt-6 bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 md:p-5 rounded-2xl shadow">
+
                         <h2 className="font-semibold mb-3 md:mb-4">입력</h2>
 
                         {/* 1) 기본 입력 */}
@@ -387,7 +396,10 @@ export default function OutletDiscountCalculator() {
                     </div>
 
                     {/* 히스토리 카드 */}
-                    <div className="mt-4 md:mt-6 bg-white p-4 md:p-5 rounded-2xl shadow text-xs md:text-sm">
+                    {/*<div className="mt-4 md:mt-6 bg-white p-4 md:p-5 rounded-2xl shadow text-xs md:text-sm">*/}
+                    <div
+                        className="mt-4 md:mt-6 bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 md:p-5 rounded-2xl shadow text-xs md:text-sm">
+
                         <h2 className="font-semibold mb-3">계산 히스토리 {loadingHistory &&
                             <span className="text-gray-400">(불러오는 중…)</span>}</h2>
                         {history.length === 0 ? (
