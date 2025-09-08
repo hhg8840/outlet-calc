@@ -134,11 +134,11 @@ async function dbDeleteHistory(id: string) {
  * ===== 컴포넌트 =====
  */
 export default function OutletDiscountCalculator() {
-    const [basePrice, setBasePrice] = useState<number>(0);
+    const [basePrice, setBasePrice] = useState<number>();
     const [discountMode, setDiscountMode] = useState<DiscountMode>("amount");
-    const [baseDiscountAmount, setBaseDiscountAmount] = useState<number>(0);
-    const [baseDiscountPercent, setBaseDiscountPercent] = useState<number>(40);
-    const [extra, setExtra] = useState<number>(25);
+    const [baseDiscountAmount, setBaseDiscountAmount] = useState<number>();
+    const [baseDiscountPercent, setBaseDiscountPercent] = useState<number>();
+    const [extra, setExtra] = useState<number>();
     const [memo, setMemo] = useState<string>("");
     const [history, setHistory] = useState<HistoryItem[]>([]);
     const [kreamPrice, setKreamPrice] = useState<number | undefined>(undefined);
@@ -316,34 +316,85 @@ export default function OutletDiscountCalculator() {
 
                             <div className="flex items-center gap-2">
                                 <label className="min-w-[84px] text-xs text-gray-600">1차 할인</label>
-                                <div className="flex-1 flex items-center gap-2">
-                                    <div className="inline-flex rounded-lg overflow-hidden border">
-                                        <button type="button"
-                                                className={`px-2.5 py-1.5 text-xs ${discountMode === "amount" ? "bg-teal-500 text-white" : "bg-white text-teal-600"}`}
-                                                onClick={() => setDiscountMode("amount")}>금액
+
+                                {/* 토글 + 인풋이 겹치지 않도록 flex 수축/확장 제어 */}
+                                <div className="flex-1 flex items-center gap-2 min-w-0">
+                                    {/* 세그먼트 토글: 고정폭/수축 금지, 인풋 높이와 동일 */}
+                                    <div className="inline-flex rounded-lg overflow-hidden border h-10 shrink-0">
+                                        <button
+                                            type="button"
+                                            className={`px-3 h-full text-xs ${discountMode === "amount" ? "bg-teal-500 text-white" : "bg-white text-teal-600"}`}
+                                            onClick={() => setDiscountMode("amount")}
+                                        >
+                                            금액
                                         </button>
-                                        <button type="button"
-                                                className={`px-2.5 py-1.5 text-xs ${discountMode === "percent" ? "bg-teal-500 text-white" : "bg-white text-teal-600"}`}
-                                                onClick={() => setDiscountMode("percent")}>%
+                                        <button
+                                            type="button"
+                                            className={`px-3 h-full text-xs ${discountMode === "percent" ? "bg-teal-500 text-white" : "bg-white text-teal-600"}`}
+                                            onClick={() => setDiscountMode("percent")}
+                                        >
+                                            %
                                         </button>
                                     </div>
+
+                                    {/* 인풋: 남는 공간 모두 차지, 오버플로 방지 */}
                                     {discountMode === "amount" ? (
-                                        <input inputMode="numeric" pattern="[0-9]*" type="number"
-                                               className="flex-1 border rounded px-3 py-2 text-sm"
-                                               placeholder="예: 40000" value={baseDiscountAmount}
-                                               onChange={(e) => setBaseDiscountAmount(Number(e.target.value))}/>
+                                        <input
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            type="number"
+                                            className="flex-1 min-w-0 h-10 border rounded px-3 text-sm"
+                                            placeholder="예: 40000"
+                                            value={baseDiscountAmount}
+                                            onChange={(e) => setBaseDiscountAmount(Number(e.target.value))}
+                                        />
                                     ) : (
-                                        <div className="flex items-center gap-1 w-full">
-                                            <input inputMode="numeric" pattern="[0-9]*" type="number"
-                                                   className="flex-1 border rounded px-3 py-2 text-sm"
-                                                   placeholder="예: 40" value={baseDiscountPercent}
-                                                   onChange={(e) => setBaseDiscountPercent(Number(e.target.value))}/>
-                                            <span className="text-xs text-gray-500">%</span>
+                                        <div className="flex items-center gap-1 w-full min-w-0">
+                                            <input
+                                                inputMode="numeric"
+                                                pattern="[0-9]*"
+                                                type="number"
+                                                className="flex-1 min-w-0 h-10 border rounded px-3 text-sm"
+                                                placeholder="예: 40"
+                                                value={baseDiscountPercent}
+                                                onChange={(e) => setBaseDiscountPercent(Number(e.target.value))}
+                                            />
+                                            <span className="text-xs text-gray-500 shrink-0">%</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
 
+                            {/*<div className="flex items-center gap-2">*/}
+                            {/*    <label className="min-w-[84px] text-xs text-gray-600">1차 할인</label>*/}
+                            {/*    <div className="flex-1 flex items-center gap-2">*/}
+                            {/*        <div className="inline-flex rounded-lg overflow-hidden border">*/}
+                            {/*            <button type="button"*/}
+                            {/*                    className={`px-2.5 py-1.5 text-xs ${discountMode === "amount" ? "bg-teal-500 text-white" : "bg-white text-teal-600"}`}*/}
+                            {/*                    onClick={() => setDiscountMode("amount")}>금액*/}
+                            {/*            </button>*/}
+                            {/*            <button type="button"*/}
+                            {/*                    className={`px-2.5 py-1.5 text-xs ${discountMode === "percent" ? "bg-teal-500 text-white" : "bg-white text-teal-600"}`}*/}
+                            {/*                    onClick={() => setDiscountMode("percent")}>%*/}
+                            {/*            </button>*/}
+                            {/*        </div>*/}
+                            {/*        {discountMode === "amount" ? (*/}
+
+                            {/*            <input inputMode="numeric" pattern="[0-9]*" type="number"*/}
+                            {/*                   className="flex-1 border rounded px-3 py-2 text-sm"*/}
+                            {/*                   placeholder="예: 40000" value={baseDiscountAmount}*/}
+                            {/*                   onChange={(e) => setBaseDiscountAmount(Number(e.target.value))}/>*/}
+
+                            {/*        ) : (*/}
+
+                            {/*                <input inputMode="numeric" pattern="[0-9]*" type="number"*/}
+                            {/*                       className="flex-1 border rounded px-3 py-2 text-sm"*/}
+                            {/*                       placeholder="예: 40" value={baseDiscountPercent}*/}
+                            {/*                       onChange={(e) => setBaseDiscountPercent(Number(e.target.value))}/>*/}
+
+                            {/*        )}*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
 
                             <div className="flex items-center gap-2">
                                 <label className="min-w-[84px] text-xs text-gray-600">추가 할인(%)</label>
