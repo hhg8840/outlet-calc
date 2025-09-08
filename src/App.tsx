@@ -49,7 +49,20 @@ const poizonNetFromPrice = (price?: number) => {
     if (p >= 450000) return p - 45000;
     return p * 0.9;
 };
+
 const poizonFeeFromPrice = (price?: number, net?: number) => (price !== undefined && net !== undefined ? price - net : undefined);
+
+// ===== 숫자 포맷 유틸 (입력용) =====
+const formatNumberInput = (value: string) => {
+    const digits = value.replace(/[^0-9]/g, "");
+    if (!digits) return "";
+    return new Intl.NumberFormat("ko-KR").format(Number(digits));
+};
+const parseNumberInput = (value: string): number | undefined => {
+    const digits = value.replace(/[^0-9]/g, "");
+    return digits ? Number(digits) : undefined;
+};
+
 
 /**
  * ===== 타입 =====
@@ -144,6 +157,9 @@ export default function OutletDiscountCalculator() {
     const [kreamPrice, setKreamPrice] = useState<number | undefined>(undefined);
     const [poizonPrice, setPoizonPrice] = useState<number | undefined>(undefined);
     const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
+    const [kreamPriceInput, setKreamPriceInput] = useState<string>("");
+    const [poizonPriceInput, setPoizonPriceInput] = useState<string>("");
+
 
     // 초기 로드: DB 히스토리 가져오기
     useEffect(() => {
@@ -412,10 +428,19 @@ export default function OutletDiscountCalculator() {
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">
                                     <label className="min-w-[84px] text-xs text-gray-600">Poizon 가격</label>
-                                    <input inputMode="numeric" pattern="[0-9]*" type="number"
-                                           className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 66000"
-                                           value={poizonPrice ?? ""}
-                                           onChange={(e) => setPoizonPrice(e.target.value === "" ? undefined : Number(e.target.value))}/>
+                                    <input
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        type="text"
+                                        className="flex-1 border rounded px-3 py-2 text-sm"
+                                        placeholder="예: 66,000"
+                                        value={poizonPriceInput}
+                                        onChange={(e) => {
+                                            const formatted = formatNumberInput(e.target.value);
+                                            setPoizonPriceInput(formatted);
+                                            setPoizonPrice(parseNumberInput(formatted));
+                                        }}
+                                    />
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2 pl-[84px] text-[11px] text-gray-600">
                                 <span
@@ -429,10 +454,20 @@ export default function OutletDiscountCalculator() {
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">
                                     <label className="min-w-[84px] text-xs text-gray-600">Kream 가격</label>
-                                    <input inputMode="numeric" pattern="[0-9]*" type="number"
-                                           className="flex-1 border rounded px-3 py-2 text-sm" placeholder="예: 65000"
-                                           value={kreamPrice ?? ""}
-                                           onChange={(e) => setKreamPrice(e.target.value === "" ? undefined : Number(e.target.value))}/>
+                                    <input
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        type="text"
+                                        className="flex-1 border rounded px-3 py-2 text-sm"
+                                        placeholder="예: 65,000"
+                                        value={kreamPriceInput}
+                                        onChange={(e) => {
+                                            const formatted = formatNumberInput(e.target.value);
+                                            setKreamPriceInput(formatted);
+                                            setKreamPrice(parseNumberInput(formatted));
+                                        }}
+                                    />
+
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2 pl-[84px] text-[11px] text-gray-600">
                                 <span
