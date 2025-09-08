@@ -58,6 +58,7 @@ const formatNumberInput = (value: string) => {
     if (!digits) return "";
     return new Intl.NumberFormat("ko-KR").format(Number(digits));
 };
+
 const parseNumberInput = (value: string): number | undefined => {
     const digits = value.replace(/[^0-9]/g, "");
     return digits ? Number(digits) : undefined;
